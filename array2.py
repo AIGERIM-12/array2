@@ -1,4 +1,6 @@
 import os
+import random
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -6,12 +8,32 @@ clear_screen()
 print("Welcome to the 'Battleship' game!")
 
 results = []
+def place_ship():
+    ship = []
+    while len(ship) < 3:
+        
+        start_row = random.randint(0, 6)
+        start_col = random.randint(0, 6)
+      
+        orientation = random.choice(["horizontal", "vertical"])
+
+    
+        if orientation == "horizontal":
+          
+            if start_col + 2 <= 6:
+                ship = [(start_row, start_col), (start_row, start_col + 1), (start_row, start_col + 2)]
+        else:  
+          
+            if start_row + 2 <= 6:
+                ship = [(start_row, start_col), (start_row + 1, start_col), (start_row + 2, start_col)]
+
+    return ship
 
 while True:
     name = input("What's your name, player? ")
 
     board = [['~' for _ in range(7)] for _ in range(7)]
-    ship = [(1, 1), (1, 2), (1, 3)]
+    ship = place_ship()  
     shots = 0
 
     while True:
@@ -24,8 +46,9 @@ while True:
 
         print(f"Shots: {shots}")
 
-        shot = input("Enter coordinates for your shot (e.g., A1): ").strip().upper()
+        shot = input("Enter coordinates for your shot (e.g., A1): ").upper()
 
+       
         if len(shot) != 2 or shot[0] not in 'ABCDEFG' or not shot[1].isdigit():
             print("Invalid format. Try again!")
             input("Press Enter to continue...")
@@ -34,6 +57,7 @@ while True:
         col = 'ABCDEFG'.index(shot[0])
         row = int(shot[1]) - 1
 
+      
         if row < 0 or row > 6 or col < 0 or col > 6:
             print("Coordinates out of bounds. Try again!")
             input("Press Enter to continue...")
@@ -49,7 +73,7 @@ while True:
         if (row, col) in ship:
             print("Hit!")
             board[row][col] = 'H'
-            ship.remove((row, col))
+            ship.remove((row, col))  
             input("Press Enter to continue...")
         else:
             print("Miss!")
@@ -61,8 +85,8 @@ while True:
 
             results.append((name, shots))
 
-            play_again = input("Do you want to play again? (y/n): ").strip().lower()
-            if play_again != 'y':
+            play_again = input("Do you want to play again? (yes/no): ").lower()
+            if play_again != 'yes':
                 print("\nPlayer rankings:")
                 rank = 1
                 for player in results:
@@ -72,7 +96,7 @@ while True:
                 exit()
 
             board = [['~' for _ in range(7)] for _ in range(7)]
-            ship = [(1, 1), (1, 2), (1, 3)]
+            ship = place_ship()  
             shots = 0
             continue
 
